@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,7 +37,8 @@ class User extends Authenticatable
         return $this->hasMany(Folder::class);
     }
 
-    public function languages(): BelongsToMany {
-        return $this->belongsToMany(Language::class, 'user_language_level', 'user_id', 'language_id');
+    public function languageLevels(): HasMany
+    {
+        return $this->hasMany(UserLanguageLevel::class);
     }
 }
