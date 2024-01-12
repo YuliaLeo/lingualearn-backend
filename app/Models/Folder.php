@@ -11,6 +11,12 @@ class Folder extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'user_id',
+        'language_id'
+    ];
+
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }

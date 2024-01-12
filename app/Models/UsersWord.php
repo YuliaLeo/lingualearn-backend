@@ -10,6 +10,12 @@ class UsersWord extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'word',
+        'translation',
+        'folder_id'
+    ];
+
     public function folder(): BelongsTo {
         return $this->belongsTo(Folder::class);
     }

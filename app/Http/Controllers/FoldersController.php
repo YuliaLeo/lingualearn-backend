@@ -2,44 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateOrUpdateFolderRequest;
+use App\Http\Requests\UsersFoldersRequest;
 use App\Models\Folder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class FoldersController extends Controller
+class FoldersController extends BaseController
 {
-    public function index()
+    public function get(string $id)
     {
-        $folders = Folder::all();
+        $folder = Folder::find($id);
 
-        return response()->json(['folders' => $folders], 200);
+        return $this->successResponse(['folder' => $folder->only(['name'])], null, 200);
     }
 
-    public function store(Request $request)
+    public function getAll(UsersFoldersRequest $request)
+    {
+        $userId = Auth::id();
+        $folders = Folder::where('user_id', $userId)
+            ->where('language_id', $request->languageId)
+            ->get();
+        $filteredFolders = $folders->map(function ($folder) {
+            return $folder->only(['name']);
+        });
+
+        return $this->successResponse(['folders' => $filteredFolders], null, 200);
+    }
+
+    public function create(CreateOrUpdateFolderRequest $request)
     {
         Folder::create([
             'name' => $request->name,
             'user_id' => Auth::id(),
+            'language_id' => $request->language_id
         ]);
 
-        return response()->json(['message' => 'Folder created successfully'], 201);
+        return $this->successResponse(null, 'Folder created successfully', 201);
     }
 
-    public function edit(string $id)
-    {
-        $folder = Folder::find($id);
-
-        return response()->json(['folder' => $folder], 200);
-    }
-
-    public function update(Request $request, string $id)
+    public function update(CreateOrUpdateFolderRequest $request, string $id)
     {
         $folder = Folder::find($id);
         $folder->update($request->all());
-        return response()->json(['folder' => $folder], 200);
+
+        return $this->successResponse(['folder' =>  $folder->only(['name'])], null, 200);
     }
 
-    public function destroy(string $id)
+    public function delete(string $id)
     {
         $folder = Folder::find($id);
         $folder->delete();

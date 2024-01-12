@@ -3,21 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrUpdateWordRequest;
+use App\Http\Requests\GetFoldersWordsRequest;
 use App\Http\Requests\RepeatWordsRequest;
 use App\Models\Folder;
 use App\Models\UsersWord;
 use Illuminate\Support\Facades\Auth;
 
-class WordController extends Controller
+class WordsController extends Controller
 {
-    public function index()
+    public function get(string $id)
     {
-        $words = UsersWord::all();
+        $word = UsersWord::find($id);
 
-        return response()->json(['words' => $words], 200);
+        return $this->successResponse(['word' => $word->only(['word', 'translation'])], null, 200);
     }
 
-    public function store(CreateOrUpdateWordRequest $request)
+    public function getAll(GetFoldersWordsRequest $request)
+    {
+        $words = UsersWord::where('folder_id', $request->folder_id)->get();
+        $filteredWords = $words->map(function ($word) {
+            return $word->only(['word']);
+        });
+
+        return $this->successResponse(['words' => $filteredWords], null, 200);
+    }
+
+    public function create(CreateOrUpdateWordRequest $request)
     {
         UsersWord::create([
             'word' => $request->word,
@@ -25,24 +36,18 @@ class WordController extends Controller
             'folder_id' => $request->folder_id,
         ]);
 
-        return response()->json(['message' => 'Word created successfully'], 201);
-    }
-
-    public function edit(string $id)
-    {
-        $word = UsersWord::find($id);
-
-        return response()->json(['word' => $word], 200);
+        return $this->successResponse(null, 'Word created successfully', 201);
     }
 
     public function update(CreateOrUpdateWordRequest $request, string $id)
     {
         $word = UsersWord::find($id);
         $word->update($request->all());
-        return response()->json(['word' => $word], 200);
+
+        return $this->successResponse(['word' => $word->only(['word', 'translation'])], null, 200);
     }
 
-    public function destroy(string $id)
+    public function delete(string $id)
     {
         $word = UsersWord::find($id);
         $word->delete();
@@ -65,6 +70,6 @@ class WordController extends Controller
 
         $collection = $collection->take($request->count);
 
-        return response()->json(['words' => $collection], 200);
+        return $this->successResponse(['words' => $collection], null, 200);
     }
 }

@@ -9,7 +9,7 @@ class CreateOrUpdateWordRequest extends BaseFormRequest
         return [
             'word' => 'required|string',
             'translation' => 'required|string',
-            'folder_id' => 'required|integer',
+            'folderId' => 'required|exists:folders,id',
         ];
     }
 }
