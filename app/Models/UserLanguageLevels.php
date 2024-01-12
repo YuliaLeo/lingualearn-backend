@@ -6,9 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserLanguageLevel extends Model
+class UserLanguageLevels extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'language_id',
+        'level_id',
+    ];
 
     public function user(): BelongsTo
     {

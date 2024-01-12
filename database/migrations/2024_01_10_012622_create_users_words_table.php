@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('word');
             $table->string('translation');
             $table->dateTime('next_repetition_time')->nullable();
+            $table->unsignedBigInteger('folder_id');
             $table->timestamps();
         });
     }
