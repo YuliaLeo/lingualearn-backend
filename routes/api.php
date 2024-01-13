@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::put('{id}', [WordsController::class, 'update']);
             Route::delete('{id}', [WordsController::class, 'delete']);
             Route::get('repeat', [WordsController::class, 'repeat']);
+            Route::put('update-repetition-time', [WordsController::class, 'updateRepetitionTime']);
         }
     );
 });

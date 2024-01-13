@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateOrUpdateWordRequest;
 use App\Http\Requests\GetFoldersWordsRequest;
 use App\Http\Requests\RepeatWordsRequest;
+use App\Http\Requests\UpdateRepetitionTimeRequest;
 use App\Models\Folder;
 use App\Models\UsersWord;
 use Illuminate\Support\Facades\Auth;
 
-class WordsController extends Controller
+class WordsController extends BaseController
 {
     public function get(string $id)
     {
@@ -20,7 +21,7 @@ class WordsController extends Controller
 
     public function getAll(GetFoldersWordsRequest $request)
     {
-        $words = UsersWord::where('folder_id', $request->folder_id)->get();
+        $words = UsersWord::where('folder_id', $request->folderId)->get();
         $filteredWords = $words->map(function ($word) {
             return $word->only(['word']);
         });
@@ -33,7 +34,7 @@ class WordsController extends Controller
         UsersWord::create([
             'word' => $request->word,
             'translation' => $request->translation,
-            'folder_id' => $request->folder_id,
+            'folder_id' => $request->folderId,
         ]);
 
         return $this->successResponse(null, 'Word created successfully', 201);
@@ -71,5 +72,27 @@ class WordsController extends Controller
         $collection = $collection->take($request->count);
 
         return $this->successResponse(['words' => $collection], null, 200);
+    }
+
+    public function updateRepetitionTime(UpdateRepetitionTimeRequest $request)
+    {
+        $word = UsersWord::find($request->wordId);
+        $shownAt = $request->shownAt;
+        $isCorrect = $request->isCorrect;
+
+        if ($isCorrect) {
+            $word->correct_count++;
+        } else {
+            $word->incorrect_count++;
+        }
+
+        if ($word->correct_count > 5) {
+            $word->is_archived = true;
+            $word->next_repetition_time = null;
+        } else {
+            // алгоритм рассчета следующего времени повторения
+        }
+
+        $word->save();
     }
 }

@@ -12,7 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('word');
             $table->string('translation');
-            $table->dateTime('next_repetition_time')->nullable();
+            $table->integer('correct_count')->default(0);
+            $table->integer('incorrect_count')->default(0);
+            $table->dateTime('next_show_at ')->nullable();
+            $table->boolean('is_archived ')->default(false);
             $table->unsignedBigInteger('folder_id');
             $table->timestamps();
         });
