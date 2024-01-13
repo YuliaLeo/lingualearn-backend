@@ -8,10 +8,19 @@ use App\Http\Requests\RepeatWordsRequest;
 use App\Http\Requests\UpdateRepetitionTimeRequest;
 use App\Models\Folder;
 use App\Models\UsersWord;
+use App\Services\WordsService;
 use Illuminate\Support\Facades\Auth;
 
 class WordsController extends BaseController
 {
+    private WordsService $wordsService;
+
+    public function __construct(
+        WordsService $wordsService
+    ) {
+        $this->wordsService = $wordsService;
+    }
+
     public function get(string $id)
     {
         $word = UsersWord::find($id);
@@ -86,11 +95,11 @@ class WordsController extends BaseController
             $word->incorrect_count++;
         }
 
-        if ($word->correct_count > 5) {
+        $word->next_show_at = $this->wordsService->calculateNextShowTime($word, $shownAt, $isCorrect);
+
+        if ($word->correct_count > 6) {
             $word->is_archived = true;
-            $word->next_repetition_time = null;
-        } else {
-            // алгоритм рассчета следующего времени повторения
+            $word->next_show_at = null;
         }
 
         $word->save();

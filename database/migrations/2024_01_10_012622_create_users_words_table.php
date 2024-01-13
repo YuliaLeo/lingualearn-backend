@@ -14,8 +14,8 @@ return new class extends Migration
             $table->string('translation');
             $table->integer('correct_count')->default(0);
             $table->integer('incorrect_count')->default(0);
-            $table->dateTime('next_show_at ')->nullable();
-            $table->boolean('is_archived ')->default(false);
+            $table->dateTime('next_show_at')->nullable();
+            $table->boolean('is_archived')->default(false);
             $table->unsignedBigInteger('folder_id');
             $table->timestamps();
         });

@@ -11,7 +11,9 @@ class UsersWordFactory extends Factory
         return [
             'word' => $this->faker->word,
             'translation' => $this->faker->word,
-            'next_repetition_time' => $this->faker->dateTime,
+            'next_show_at' => $this->faker->dateTime,
+            'correct_count' => $this->faker->numberBetween(0, 6),
+            'incorrect_count' => $this->faker->numberBetween(0, 6),
             'folder_id' => $this->faker->numberBetween(1, 3),
         ];
     }

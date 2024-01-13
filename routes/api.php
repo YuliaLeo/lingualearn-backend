@@ -23,10 +23,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::get('', [WordsController::class, 'getAll']);
             Route::post('', [WordsController::class, 'create']);
             Route::get('{id}', [WordsController::class, 'get']);
+            Route::put('update-repetition-time', [WordsController::class, 'updateRepetitionTime']);
             Route::put('{id}', [WordsController::class, 'update']);
             Route::delete('{id}', [WordsController::class, 'delete']);
             Route::get('repeat', [WordsController::class, 'repeat']);
-            Route::put('update-repetition-time', [WordsController::class, 'updateRepetitionTime']);
         }
     );
 });

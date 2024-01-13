@@ -13,6 +13,7 @@ class UsersWord extends Model
     protected $fillable = [
         'word',
         'translation',
+        'next_show_at',
         'folder_id'
     ];
 
